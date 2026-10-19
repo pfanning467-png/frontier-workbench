@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft Frontier Workbench — Strategic Technical Lead</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900 min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-[#0078D4] text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center font-bold tracking-wider text-sm border border-white/20">
+          FW
+        </div>
+        <div>
+          <div class="font-semibold text-base leading-tight flex items-center gap-2">
+            Microsoft Frontier Workbench
+            <span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-blue-800/80 border border-blue-400/40 text-blue-100">
+              Technical Lead Blueprint
+            </span>
+          </div>
+          <div class="text-xs text-blue-100/80">Autonomous Transformation Lifecycle · Unified Architecture</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center flex-wrap gap-2">
+        <div class="flex items-center bg-blue-900/60 rounded-lg p-1 border border-blue-400/30">
+          <span class="text-xs text-blue-200 px-2 font-medium">Customer:</span>
+          <select id="client-select" onchange="switchClient(this.value)" class="bg-white text-slate-900 text-xs font-semibold rounded px-2.5 py-1 outline-none border-none cursor-pointer">
+            <!-- options populated via JS -->
+          </select>
+        </div>
+
+        <button onclick="openModal('modal-add-customer')" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold transition border border-white/20 text-white">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          + Add Customer
+        </button>
+
+        <button onclick="openModal('modal-env')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 text-xs font-medium border border-amber-300/40">
+          Sandbox Active ⓘ
+        </button>
+
+        <button onclick="exportHandoverBrief()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#0078D4] hover:bg-blue-50 text-xs font-semibold shadow-sm transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export Brief
+        </button>
+
+        <button onclick="resetDemo()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition" title="Reset Demo State">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUBHEADER: STAGES -->
+  <section class="bg-white border-b border-slate-200 sticky top-[53px] z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold uppercase text-slate-600 tracking-wider">Transformation Stage:</span>
+        <div class="inline-flex rounded-lg p-1 bg-slate-100 border border-slate-200" id="stage-buttons">
+          <button onclick="setStage('discover')" id="btn-stage-discover" class="stage-nav-btn flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition">
+            <span>1. Discover & Understand</span>
+          </button>
+          <button onclick="setStage('design')" id="btn-stage-design" class="stage-nav-btn flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition">
+            <span>2. Design & Shape</span>
+          </button>
+          <button onclick="setStage('deliver')" id="btn-stage-deliver" class="stage-nav-btn flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition">
+            <span>3. Deliver & Realise Value</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative">
+        <svg class="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Filter signals, architectures, tasks..." class="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:border-[#0078D4] w-64" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN BODY -->
+  <main class="max-w-7xl mx-auto w-full px-4 py-5 flex-1 space-y-5">
+    
+    <!-- Hero Banner Card -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-80 h-32 bg-gradient-to-l from-blue-50 to-transparent pointer-events-none"></div>
+      <div class="flex flex-wrap items-start justify-between gap-4 relative z-10">
+        <div class="flex items-start gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#0078D4] flex items-center justify-center shrink-0 border border-blue-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 id="client-name" class="text-xl font-bold text-slate-900">Unitree Robotics</h1>
+              <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                Strategic Account
+              </span>
+            </div>
+            <p id="client-tagline" class="text-xs text-blue-600 font-medium mt-0.5">Industrial Inspection Quadrupeds & Humanoid Fleets (B2, Go2, G1, H1)</p>
+            <p id="client-summary" class="text-xs text-slate-600 max-w-3xl mt-2 leading-relaxed">Architecting edge-to-cloud telemetry and industrial digital twins across heavy industrial and remote inspection fleets.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="openModal('modal-add-note')" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-xs font-semibold transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            + Add Evidence / Note
+          </button>
+          <button onclick="copySummary()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 text-xs font-semibold transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            Copy Summary
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-slate-100">
+        <div class="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Grounded Evidence
+          </div>
+          <div id="kpi-evidence" class="text-xl font-bold text-slate-900 mt-1">3 Items</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Sourced from customer visits</div>
+        </div>
+
+        <div class="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.286L13 21l-2.286-6.857L5 12l5.714-2.286L13 3z"/></svg>
+            Validated Pipeline
+          </div>
+          <div id="kpi-opps" class="text-xl font-bold text-slate-900 mt-1">1 of 3</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Confirmed with sponsor</div>
+        </div>
+
+        <div class="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            Execution Checkpoints
+          </div>
+          <div id="kpi-tasks" class="text-xl font-bold text-slate-900 mt-1">25% Done</div>
+          <div id="kpi-tasks-sub" class="text-[11px] text-slate-500 mt-0.5">1 of 4 deliverables closed</div>
+        </div>
+
+        <div class="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Indicative Annual ACR
+          </div>
+          <div id="kpi-acr" class="text-xl font-bold text-slate-900 mt-1">$1.48M / yr</div>
+          <div class="text-[11px] text-amber-700 mt-0.5">MACC Eligible: 100%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-COLUMN STAGE & COPILOT WORKSPACE -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      
+      <!-- Stage View Container (8 cols) -->
+      <div id="stage-container" class="lg:col-span-8 space-y-5">
+        
+        <!-- STAGE 1: DISCOVER -->
+        <div id="view-discover" class="space-y-5">
+          <!-- Action Banner -->
+          <div class="bg-gradient-to-r from-blue-900 to-[#0078D4] text-white rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-200">
+              <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.286L13 21l-2.286-6.857L5 12l5.714-2.286L13 3z"/></svg>
+              Strategic Lead Recommendation
+            </div>
+            <h2 class="text-lg font-bold mt-1">Grounded Discovery & Baseline Verification</h2>
+            <p id="rec-text" class="text-xs text-blue-100 max-w-2xl mt-1 leading-relaxed">
+              Before committing GPU or IoT architecture blueprints, schedule a 45-minute discovery alignment with the customer's lead systems engineer to validate edge network boundaries and agree on quantifiable latency targets.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button onclick="copilotPrompt('Draft 5 discovery questions to validate operational baseline and edge latency constraints')" class="px-3 py-1.5 rounded-lg bg-white text-[#0078D4] hover:bg-blue-50 text-xs font-bold transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.286L13 21l-2.286-6.857L5 12l5.714-2.286L13 3z"/></svg>
+                Prepare Discovery Questions
+              </button>
+              <button onclick="discoverOpportunity()" class="px-3 py-1.5 rounded-lg bg-blue-800/80 hover:bg-blue-800 text-white border border-blue-400/40 text-xs font-semibold transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Synthesize New Signal
+              </button>
+              <button onclick="setStage('design')" class="px-3 py-1.5 rounded-lg bg-blue-800/80 hover:bg-blue-800 text-white border border-blue-400/40 text-xs font-semibold transition flex items-center gap-1.5">
+                Shape Architecture Solution
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Grounded Evidence Register -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div>
+                <span class="text-[10px] font-bold tracking-widest text-[#0078D4] uppercase">CUSTOMER CONTEXT</span>
+                <h2 class="text-base font-bold text-slate-900 mt-0.5">Sourced Evidence Register</h2>
+              </div>
+              <button onclick="openModal('modal-add-note')" class="text-xs font-semibold text-[#0078D4] hover:underline inline-flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                + Add Note
+              </button>
+            </div>
+            <div id="evidence-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Opportunities -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div>
+                <span class="text-[10px] font-bold tracking-widest text-[#0078D4] uppercase">OPPORTUNITY RADAR</span>
+                <h2 class="text-base font-bold text-slate-900 mt-0.5">Transformation Opportunities</h2>
+              </div>
+              <button onclick="discoverOpportunity()" class="px-2.5 py-1 rounded bg-[#0078D4] text-white text-xs font-semibold hover:bg-blue-700 transition">
+                + Discover Opportunities
+              </button>
+            </div>
+            <div id="opps-list" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- STAGE 2: DESIGN -->
+        <div id="view-design" class="space-y-5 hidden">
+          <!-- Architecture Blocks -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div>
+                <span class="text-[10px] font-bold tracking-widest text-[#0078D4] uppercase">SOLUTION SHAPING</span>
+                <h2 class="text-base font-bold text-slate-900 mt-0.5">Microsoft Architecture Blueprint & Building Blocks</h2>
+              </div>
+              <button onclick="openModal('modal-specialist')" class="px-3 py-1.5 rounded-lg bg-[#0078D4] text-white hover:bg-blue-700 text-xs font-semibold transition flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Engage Specialist
+              </button>
+            </div>
+            <div id="capabilities-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Sensitivity Calculator -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 mb-4 gap-2">
+              <div>
+                <span class="text-[10px] font-bold tracking-widest text-emerald-700 uppercase">COMMERCIAL & FINOPS</span>
+                <h2 class="text-base font-bold text-slate-900 mt-0.5">Indicative Workload & Consumption Sensitivity</h2>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-slate-500">Modeled Annual Run-Rate</span>
+                <div id="calc-annual-total" class="text-2xl font-bold text-slate-900">$1.48M USD</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+              <div>
+                <label class="text-xs font-bold text-slate-700 flex justify-between">
+                  <span>Active Robot Fleet Size</span>
+                  <span id="slider-fleet-val" class="text-[#0078D4] font-mono">650 units</span>
+                </label>
+                <input type="range" id="slider-fleet" min="100" max="3000" step="50" value="650" oninput="updateFleetSize(this.value)" class="w-full accent-[#0078D4] mt-2 cursor-pointer" />
+                <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                  <span>100</span>
+                  <span>1,500</span>
+                  <span>3,000</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1.5">
+                  GPU Training & Compute Tier
+                </label>
+                <select id="select-compute" onchange="updateCompute(this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-medium outline-none focus:border-[#0078D4]">
+                  <option value="Lightweight">Lightweight (Edge only + burst CPU)</option>
+                  <option value="Balanced" selected>Balanced (Multi-node A100/H100 batch)</option>
+                  <option value="Frontier">Frontier (Continuous H100 InfiniBand cluster)</option>
+                </select>
+                <span id="compute-monthly-factor" class="text-[10px] text-slate-500 mt-1 block">Monthly compute factor: $54,600/mo</span>
+              </div>
+
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1.5">
+                  Microsoft Fabric Capacity SKU
+                </label>
+                <select id="select-fabric" onchange="updateFabric(this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-medium outline-none focus:border-[#0078D4]">
+                  <option value="F64">F64 Capacity (Standard telemetry streams)</option>
+                  <option value="F128" selected>F128 Capacity (Sub-second KQL indexing)</option>
+                  <option value="F256">F256 Capacity (Continuous multi-modal video lakes)</option>
+                </select>
+                <span class="text-[10px] text-slate-500 mt-1 block">Includes Fabric Lakehouse & Power BI DirectLake</span>
+              </div>
+            </div>
+
+            <div class="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+              <span class="font-bold text-amber-700 shrink-0">FinOps Note:</span>
+              <span>This interactive model reflects synthetic sizing assumptions. Official contractual pricing must be validated against the customer's Microsoft Azure Consumption Commitment (MACC) and verified regional GPU SKU availability.</span>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+              <button onclick="setStage('deliver')" class="px-4 py-2 rounded-lg bg-[#0078D4] hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5">
+                Approve Blueprint & Advance to Delivery Plan
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STAGE 3: DELIVER -->
+        <div id="view-deliver" class="space-y-5 hidden">
+          <!-- Tasks Matrix -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <div class="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 mb-4 gap-2">
+              <div>
+                <span class="text-[10px] font-bold tracking-widest text-purple-700 uppercase">EXECUTION & ACCOUNTABILITY</span>
+                <h2 class="text-base font-bold text-slate-900 mt-0.5">Virtual Team Deliverables & Dependencies</h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="deliver-tasks-percent" class="text-xs font-bold text-slate-700">25% Completed</span>
+                <div class="w-24 bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div id="deliver-tasks-bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 25%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="tasks-list" class="space-y-2.5">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+              <button onclick="addNewTaskPrompt()" class="text-xs font-semibold text-[#0078D4] hover:underline inline-flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                + Add Owned Action
+              </button>
+
+              <div class="flex items-center gap-2">
+                <button onclick="setStage('design')" class="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-100 text-xs font-medium">
+                  Back to Design
+                </button>
+                <button onclick="exportHandoverBrief()" class="px-4 py-1.5 rounded-lg bg-[#0078D4] hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                  Export Handover Brief
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Value Realisation -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+            <span class="text-[10px] font-bold tracking-widest text-emerald-700 uppercase">OUTCOME TRACKING</span>
+            <h2 class="text-base font-bold text-slate-900 mt-0.5">Post-Deployment Value Realisation</h2>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Verify delivered business outcomes against the agreed baseline metrics to demonstrate measurable cloud ROI.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">Operational Alerting</div>
+                <div class="text-sm font-bold text-slate-900 mt-1">Incident Triage Latency</div>
+                <div class="mt-2 text-xs flex justify-between">
+                  <span class="text-slate-500">Baseline: 4h</span>
+                  <span class="text-emerald-700 font-bold">Measured: 1.8s</span>
+                </div>
+                <div class="mt-1 text-[10px] text-emerald-600 font-medium">99.8% reduction achieved</div>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">AI Iteration Cadence</div>
+                <div class="text-sm font-bold text-slate-900 mt-1">Sim2Real Model Retraining</div>
+                <div class="mt-2 text-xs flex justify-between">
+                  <span class="text-slate-500">Baseline: 21 days</span>
+                  <span class="text-emerald-700 font-bold">Measured: 42 hrs</span>
+                </div>
+                <div class="mt-1 text-[10px] text-emerald-600 font-medium">85% acceleration achieved</div>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div class="text-[11px] font-bold text-slate-500 uppercase">Data Privacy & Compliance</div>
+                <div class="text-sm font-bold text-slate-900 mt-1">Automated Video Redaction</div>
+                <div class="mt-2 text-xs flex justify-between">
+                  <span class="text-slate-500">Baseline: Manual audit</span>
+                  <span class="text-emerald-700 font-bold">Measured: Automated</span>
+                </div>
+                <div class="mt-1 text-[10px] text-emerald-600 font-medium">Zero PII leakage recorded</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Grounded Copilot (4 cols) -->
+      <div class="lg:col-span-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs sticky top-[110px]">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 text-[#0078D4] flex items-center justify-center border border-blue-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 leading-none">Grounded Copilot Assistant</h3>
+                <span id="copilot-scope" class="text-[10px] text-slate-500">Scoped to Unitree Robotics</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 flex flex-col h-[520px]">
+            <!-- Quick Prompts -->
+            <div class="flex flex-wrap gap-1.5 pb-2 border-b border-slate-100">
+              <button onclick="copilotPrompt('Draft 5 discovery questions to validate operational baseline and edge latency constraints')" class="text-[10px] bg-blue-50 text-[#0078D4] hover:bg-blue-100 font-medium px-2 py-1 rounded-full border border-blue-200 transition">
+                Discovery Questions
+              </button>
+              <button onclick="copilotPrompt('Evaluate IoT Operations and Fabric architecture trade-offs for robotic telemetry')" class="text-[10px] bg-blue-50 text-[#0078D4] hover:bg-blue-100 font-medium px-2 py-1 rounded-full border border-blue-200 transition">
+                Architecture Trade-offs
+              </button>
+              <button onclick="copilotPrompt('Generate security and MACC commitment validation checklist')" class="text-[10px] bg-blue-50 text-[#0078D4] hover:bg-blue-100 font-medium px-2 py-1 rounded-full border border-blue-200 transition">
+                Security Checklist
+              </button>
+            </div>
+
+            <!-- Chat Scroll Area -->
+            <div id="copilot-chat" class="custom-scroll flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
+              <!-- Initial Message -->
+              <div class="p-3 rounded-xl bg-slate-50 text-slate-800 mr-4 border border-slate-200 rounded-bl-xs leading-relaxed">
+                <span class="text-[10px] font-bold block mb-1 opacity-70">Grounded Assistant</span>
+                <div class="text-[11px]">Welcome. I am grounded on this customer transformation record. Select a prompt above or ask for architecture blueprints, discovery questions, or risk checklists.</div>
+              </div>
+            </div>
+
+            <!-- Input Box -->
+            <div class="pt-2 border-t border-slate-100 flex items-center gap-1.5">
+              <input type="text" id="copilot-input" onkeydown="if(event.key==='Enter') sendCopilot()" placeholder="Ask question about this transformation..." class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:bg-white focus:border-[#0078D4]" />
+              <button onclick="sendCopilot()" class="p-2 rounded-lg bg-[#0078D4] hover:bg-blue-700 text-white transition shrink-0" title="Send prompt">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+    Microsoft Frontier Workbench Blueprint · Proposed Strategic Technical Lead Sandbox · Demonstrating continuous transformation lifecycle
+  </footer>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span id="toast-msg" class="text-xs font-medium">Notification message</span>
+  </div>
+
+  <!-- MODAL: ADD CUSTOMER -->
+  <div id="modal-add-customer" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Add New Customer Transformation</h3>
+        <button onclick="closeModal('modal-add-customer')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <form onsubmit="submitAddCustomer(event)" class="mt-4 space-y-3">
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Company / Account Name *</label>
+          <input type="text" id="new-cust-name" required placeholder="e.g. Acme Industrial Automation" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Strategic Transformation Objective</label>
+          <textarea id="new-cust-summary" rows="3" placeholder="Describe the operational challenge, robotics scope, or business outcome..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-customer')" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] hover:bg-blue-700 text-white rounded-lg transition">Create & Open Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD EVIDENCE NOTE -->
+  <div id="modal-add-note" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Log Grounded Evidence / Session Note</h3>
+        <button onclick="closeModal('modal-add-note')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <form onsubmit="submitAddNote(event)" class="mt-4 space-y-3">
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Evidence Title *</label>
+          <input type="text" id="note-title" required placeholder="e.g. Robot Battery Telemetry Ingestion Barrier" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Source Reference</label>
+            <input type="text" id="note-source" placeholder="e.g. Factory Site Visit #2" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Confidence Rating</label>
+            <select id="note-conf" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none">
+              <option value="Customer Validated">Customer Validated</option>
+              <option value="Grounded Telemetry">Grounded Telemetry</option>
+              <option value="Unverified Hypothesis">Unverified Hypothesis</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Factual Claim & Verifiable Observations *</label>
+          <textarea id="note-claim" rows="3" required placeholder="State verifiable observations, telemetry rates, network constraints, or customer assertions..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-add-note')" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] hover:bg-blue-700 text-white rounded-lg transition">Save to Customer Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: SPECIALIST -->
+  <div id="modal-specialist" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Engage Microsoft Specialist Squad</h3>
+        <button onclick="closeModal('modal-specialist')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <form onsubmit="submitSpecialist(event)" class="mt-4 space-y-3">
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Specialist Domain Team</label>
+          <select id="spec-team" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none">
+            <option value="Global Black Belt (GBB) - Robotics & Edge">Global Black Belt (GBB) — Robotics & Edge AI</option>
+            <option value="Customer Architecture & Engineering (CAT)">Customer Architecture & Engineering (CAT)</option>
+            <option value="Specialist CSA - Microsoft Fabric Streaming">Specialist CSA — Microsoft Fabric Streaming</option>
+            <option value="Microsoft Purview Security Squad">Microsoft Purview Security Squad</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Scope & Specific Architecture Questions</label>
+          <textarea id="spec-notes" rows="3" placeholder="Specify requested deliverables (e.g. Akri edge broker benchmarking, H100 quota allocation, OT firewall egress review)..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-[#0078D4] outline-none"></textarea>
+        </div>
+        <div class="p-2.5 rounded-lg bg-blue-50 text-[11px] text-blue-900 border border-blue-200">
+          Routing automatically packages the validated customer evidence items and indicative ACR run-rate.
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-specialist')" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] hover:bg-blue-700 text-white rounded-lg transition">Dispatch Specialist Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EVIDENCE INSPECTOR -->
+  <div id="modal-evidence-inspector" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <span id="inspect-ev-id" class="text-[10px] font-bold uppercase tracking-wider text-blue-600 font-mono">EVIDENCE INSPECTOR</span>
+          <h3 id="inspect-ev-title" class="font-bold text-slate-900 text-base mt-0.5">Evidence Title</h3>
+        </div>
+        <button onclick="closeModal('modal-evidence-inspector')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs leading-relaxed">
+        <div>
+          <span class="font-bold text-slate-700 block">Sourced Record:</span>
+          <p id="inspect-ev-claim" class="text-slate-600 mt-0.5 p-2 bg-slate-50 rounded border border-slate-200"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div><span class="font-bold text-slate-700">Source:</span> <span id="inspect-ev-source"></span></div>
+          <div><span class="font-bold text-slate-700">Validation Status:</span> <span id="inspect-ev-conf"></span></div>
+        </div>
+        <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-amber-900 text-[11px]">
+          <strong>Validation Criterion:</strong> Before promoting this claim to an architecture design constraint, ensure direct sign-off from the customer engineering sponsor.
+        </div>
+        <div class="flex justify-end pt-2">
+          <button onclick="closeModal('modal-evidence-inspector')" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] text-white rounded-lg hover:bg-blue-700 transition">Close Inspector</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CAPABILITY INSPECTOR -->
+  <div id="modal-cap-inspector" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#0078D4]">MICROSOFT CAPABILITY REVIEW</span>
+          <h3 id="inspect-cap-name" class="font-bold text-slate-900 text-base mt-0.5">Capability</h3>
+        </div>
+        <button onclick="closeModal('modal-cap-inspector')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs leading-relaxed">
+        <div>
+          <span class="font-bold text-slate-700">Architectural Role:</span>
+          <p id="inspect-cap-role" class="text-slate-600 mt-0.5"></p>
+        </div>
+        <div>
+          <span class="font-bold text-slate-700">Deployment Pattern & Sizing Notes:</span>
+          <p id="inspect-cap-note" class="text-slate-600 mt-0.5 p-2 bg-slate-50 rounded border border-slate-200"></p>
+        </div>
+        <div class="p-3 bg-blue-50 rounded-lg border border-blue-200 text-blue-900 text-[11px]">
+          <strong>Pre-Flight Checklist:</strong>
+          <ul class="list-disc pl-4 mt-1 space-y-1">
+            <li>Confirm latency SLO and offline fallback buffers on robot hardware.</li>
+            <li>Validate Entra ID managed identity egress through customer OT firewall.</li>
+            <li>Verify regional GPU quota availability in chosen Azure pairing.</li>
+          </ul>
+        </div>
+        <div class="flex justify-end pt-2">
+          <button onclick="closeModal('modal-cap-inspector')" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] text-white rounded-lg hover:bg-blue-700 transition">Close Review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ENVIRONMENT -->
+  <div id="modal-env" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Test Environment & Service Status</h3>
+        <button onclick="closeModal('modal-env')" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs leading-relaxed">
+        <p class="text-slate-600">
+          This workbench is executing inside an interactive client-side sandbox. All data structures, calculations, and agent workflows operate on an interconnected transformation state model.
+        </p>
+        <div class="space-y-2 border border-slate-200 rounded-xl p-3 bg-slate-50 text-[11px]">
+          <div class="flex justify-between items-center py-1 border-b border-slate-200">
+            <span class="font-semibold text-slate-700">Customer Records (Dataverse)</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">Interactive Sandbox</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-200">
+            <span class="font-semibold text-slate-700">AI Grounded Orchestration (Foundry)</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">In-Memory Engine</span>
+          </div>
+          <div class="flex justify-between items-center py-1 border-b border-slate-200">
+            <span class="font-semibold text-slate-700">Consumption Sizing (Azure Pricing Engine)</span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">Modeled Sizing</span>
+          </div>
+          <div class="flex justify-between items-center py-1">
+            <span class="font-semibold text-slate-700">Microsoft Entra ID Single Sign-On</span>
+            <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">Mock Authenticated</span>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2">
+          <button onclick="closeModal('modal-env')" class="px-4 py-1.5 text-xs font-bold bg-[#0078D4] text-white rounded-lg hover:bg-blue-700 transition">Acknowledge</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PURE VANILLA JAVASCRIPT APP LOGIC (NO BABEL, NO COMPILATION REQUIRED, GUARANTEED TO WORK INSTANTLY) -->
+  <script>
+    const SEED_DATA = [
+      {
+        id: "unitree",
+        name: "Unitree Robotics",
+        tagline: "Industrial Inspection Quadrupeds & Humanoid Fleets (B2, Go2, G1, H1)",
+        summary: "Architecting edge-to-cloud telemetry and industrial digital twins across heavy industrial and remote inspection fleets. Focus on sub-second anomaly detection and factory OT boundary compliance.",
+        stage: "discover",
+        fleetSize: 650,
+        computeProfile: "Balanced",
+        fabricSku: "F128",
+        maccTarget: "$2.4M",
+        evidence: [
+          { id: "EV-U1", title: "Factory OT DMZ Telemetry Egress", source: "Walkthrough with Lead Systems Engineer", claim: "Quadrupeds (B2) in chemical facilities operate across strict ISA95 OT DMZs with sporadic 5G/Wi-Fi 6 coverage. Alerts must buffer locally on-device.", confidence: "Grounded Telemetry" },
+          { id: "EV-U2", title: "Joint Wear Anomaly Detection Latency", source: "Field Inspection Audit Log", claim: "Predictive motor thermal and harmonic degradation models require 100Hz IMU sub-sampling. Current batch uploads take 4 hours to alert operators.", confidence: "Customer Validated" },
+          { id: "EV-U3", title: "Sim2Real GPU Training Cadence", source: "Robotics AI Research Team Sync", claim: "Locomotion policies trained in Isaac Sim need multi-node GPU clusters. Current on-premises clusters have a 3-week simulation queue backlog.", confidence: "Unverified Hypothesis" }
+        ],
+        opportunities: [
+          { id: "OPP-U1", title: "Sub-Second Fleet Telemetry & Anomaly Ingestion", need: "Real-time edge buffering and sub-500ms critical anomaly streaming to remote engineers.", target: "Reduce critical incident alert time from 4h to <3s", status: "Validated", priority: "High" },
+          { id: "OPP-U2", title: "Distributed Sim2Real Cloud Training on Azure NDv5", need: "Scalable H100/H200 cluster orchestration for parallel reinforcement learning locomotion training.", target: "Cut training pipeline backlog from 21 days to <48 hours", status: "In Discussion", priority: "High" },
+          { id: "OPP-U3", title: "Factory Floor Digital Twin with Microsoft Fabric", need: "Unified KQL streaming database across 500+ operational robots with automated maintenance triggers.", target: "Unify telemetry into one operational lakehouse", status: "Exploratory", priority: "Medium" }
+        ],
+        capabilities: [
+          { id: "CAP-1", name: "Azure IoT Operations (AIO)", role: "Edge Ingestion & MQTT Broker", status: "Selected", note: "Deploys on robot edge PC (K3s) with Akri broker. Validated for ISA95 OT DMZ buffering." },
+          { id: "CAP-2", name: "Microsoft Fabric Real-Time Intelligence", role: "Telemetry Streaming & KQL", status: "Selected", note: "Sub-second event stream processing directly into Fabric Lakehouse. Real-time Power BI alerting." },
+          { id: "CAP-3", name: "Azure AI Foundry & NDv5 GPU Clusters", role: "Model Training & RL Orchestration", status: "Under Review", note: "Slurm-managed multi-node H100 clusters with automated checkpoint evaluations." },
+          { id: "CAP-4", name: "Microsoft Purview Data Governance", role: "Industrial Security & Boundary Audit", status: "Draft", note: "End-to-end data lineage from edge robot cameras to cloud training repositories." }
+        ],
+        tasks: [
+          { id: 101, title: "Validate ISA95 OT DMZ firewall egress rules with customer CISO", owner: "Security Specialist", due: "Oct 24", done: true },
+          { id: 102, title: "Benchmark Akri MQTT edge broker latency on Go2/B2 onboard controller", owner: "Strategic Technical Lead", due: "Oct 28", done: false },
+          { id: 103, title: "Calculate Fabric F128 vs F64 capacity sizing for 100Hz telemetry", owner: "Cloud Solution Architect", due: "Nov 02", done: false },
+          { id: 104, title: "Draft executive architecture brief & GBB specialist engagement", owner: "Account Director", due: "Nov 05", done: false }
+        ]
+      },
+      {
+        id: "sunday",
+        name: "Sunday Robotics",
+        tagline: "Consumer & Home Robotics (Memo Humanoid, ACT-1/2 Foundation Models)",
+        summary: "Developing domestic humanoids capable of multi-task household assistance. Scaling continuous teleoperation demonstration ingestion with real-time video de-identification and cloud reinforcement learning.",
+        stage: "discover",
+        fleetSize: 220,
+        computeProfile: "Frontier",
+        fabricSku: "F256",
+        maccTarget: "$3.8M",
+        evidence: [
+          { id: "EV-S1", title: "Household Privacy & Video Demonstration Ingestion", source: "Data Protection Impact Assessment", claim: "Demonstration videos captured via Skill Capture Gloves contain household PII (faces, documents, screens). Must scrub prior to model training.", confidence: "Customer Validated" },
+          { id: "EV-S2", title: "ACT-2 Foundation Model GPU Scale", source: "Sunday ML Architecture Paper Draft", claim: "Multi-modal vision-language-action (VLA) model requires 256x H100 GPUs with high-throughput InfiniBand interconnect for fine-tuning.", confidence: "Grounded Telemetry" },
+          { id: "EV-S3", title: "Edge Inference Latency on Memo Humanoid", source: "Onboard Compute Hardware Specs", claim: "Memo onboard compute has an 85W TDP thermal envelope. Quantized INT4 policy execution must complete in <20ms for balance stability.", confidence: "Unverified Hypothesis" }
+        ],
+        opportunities: [
+          { id: "OPP-S1", title: "Automated Privacy-Preserving Demonstration Pipeline", need: "Sub-second edge and cloud redaction of biometric, facial, and private spatial data from training runs.", target: "100% compliance with GDPR & domestic privacy standards", status: "Validated", priority: "High" },
+          { id: "OPP-S2", title: "Azure AI Foundry Large-Scale VLA Training Infrastructure", need: "Dedicated AI supercomputing cluster with seamless checkpoint storage on Azure Blob Premium.", target: "Reduce ACT-2 fine-tuning epoch from 12 days to 3.5 days", status: "Validated", priority: "High" },
+          { id: "OPP-S3", title: "OTA Model Quantization & Canary Edge Deployment", need: "Automated ONNX Runtime optimization to package models for Memo's onboard 85W neural accelerator.", target: "Deliver continuous safety updates to domestic fleet", status: "Exploratory", priority: "Medium" }
+        ],
+        capabilities: [
+          { id: "CAP-S1", name: "Microsoft Purview + Vision AI Privacy Scrubber", role: "Automated PII De-Identification", status: "Selected", note: "Video frame redaction pipeline before demonstration data enters the Azure Machine Learning dataset." },
+          { id: "CAP-S2", name: "Azure NDv5 H100 Supercomputing Clusters", role: "VLA Foundation Model Training", status: "Selected", note: "Slurm-managed multi-node clusters with InfiniBand NDR for parallel spatial transformer training." },
+          { id: "CAP-S3", name: "ONNX Runtime & Olive Optimization", role: "Edge Quantization for Memo Humanoid", status: "Selected", note: "Compresses 7B VLA policies to 4-bit integer weights fitting Memo's 85W embedded GPU." },
+          { id: "CAP-S4", name: "Azure Cosmos DB Global Replication", role: "Device Identity & User Profile Sync", status: "Draft", note: "Sub-10ms global synchronization of consumer preferences and household task maps." }
+        ],
+        tasks: [
+          { id: 201, title: "Review Purview automated video redaction pipeline with Sunday legal team", owner: "Security Specialist", due: "Oct 25", done: true },
+          { id: 202, title: "Submit Azure H100 quota reservation request for ACT-2 model training", owner: "Strategic Technical Lead", due: "Oct 29", done: false },
+          { id: 203, title: "Run ONNX benchmark on Memo embedded system-on-module", owner: "Partner AI Architect", due: "Nov 03", done: false },
+          { id: 204, title: "Schedule MACC commercial checkpoint review with Microsoft Finance", owner: "Commercial / Finance", due: "Nov 08", done: false }
+        ]
+      }
+    ];
+
+    // Global App State
+    let clients = JSON.parse(JSON.stringify(SEED_DATA));
+    let currentId = "unitree";
+    let searchQuery = "";
+
+    function getCurrentClient() {
+      return clients.find(c => c.id === currentId) || clients[0];
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      document.getElementById("toast-msg").innerText = msg;
+      el.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+      setTimeout(() => {
+        el.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+      }, 3500);
+    }
+
+    function calculateACR(c) {
+      const base = c.computeProfile === "Frontier" ? 75000 : c.computeProfile === "Balanced" ? 42000 : 20000;
+      const monthly = Math.round(base * (c.fleetSize / 500));
+      const fabricAnnual = c.fabricSku === "F256" ? 1500000 : c.fabricSku === "F128" ? 820000 : 420000;
+      const total = (monthly * 12) + fabricAnnual;
+      return {
+        monthly,
+        annualM: (total / 1_000_000).toFixed(2)
+      };
+    }
+
+    function renderUI() {
+      const c = getCurrentClient();
+      const acr = calculateACR(c);
+
+      // Client Select Dropdown
+      const select = document.getElementById("client-select");
+      select.innerHTML = clients.map(cl => `<option value="${cl.id}" ${cl.id === currentId ? 'selected' : ''}>${cl.name}</option>`).join("");
+
+      // Header Banner
+      document.getElementById("client-name").innerText = c.name;
+      document.getElementById("client-tagline").innerText = c.tagline;
+      document.getElementById("client-summary").innerText = c.summary;
+      document.getElementById("copilot-scope").innerText = `Scoped to ${c.name}`;
+
+      // KPIs
+      document.getElementById("kpi-evidence").innerText = `${c.evidence.length} Items`;
+      const validatedCount = c.opportunities.filter(o => o.status === "Validated").length;
+      document.getElementById("kpi-opps").innerText = `${validatedCount} of ${c.opportunities.length}`;
+      
+      const doneTasks = c.tasks.filter(t => t.done).length;
+      const tasksPercent = Math.round((doneTasks / (c.tasks.length || 1)) * 100);
+      document.getElementById("kpi-tasks").innerText = `${tasksPercent}% Done`;
+      document.getElementById("kpi-tasks-sub").innerText = `${doneTasks} of ${c.tasks.length} deliverables closed`;
+      document.getElementById("kpi-acr").innerText = `$${acr.annualM}M / yr`;
+
+      // Update Calculator values
+      document.getElementById("calc-annual-total").innerText = `$${acr.annualM}M USD`;
+      document.getElementById("slider-fleet").value = c.fleetSize;
+      document.getElementById("slider-fleet-val").innerText = `${c.fleetSize} units`;
+      document.getElementById("select-compute").value = c.computeProfile;
+      document.getElementById("compute-monthly-factor").innerText = `Monthly compute factor: $${acr.monthly.toLocaleString()}/mo`;
+      document.getElementById("select-fabric").value = c.fabricSku;
+
+      // Stage Navigation styles
+      ["discover", "design", "deliver"].forEach(stg => {
+        const btn = document.getElementById(`btn-stage-${stg}`);
+        if (stg === c.stage) {
+          btn.className = "stage-nav-btn flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition bg-[#0078D4] text-white shadow-xs";
+        } else {
+          btn.className = "stage-nav-btn flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition text-slate-600 hover:text-slate-900";
+        }
+      });
+
+      // Stage Views Visibility
+      document.getElementById("view-discover").classList.toggle("hidden", c.stage !== "discover");
+      document.getElementById("view-design").classList.toggle("hidden", c.stage !== "design");
+      document.getElementById("view-deliver").classList.toggle("hidden", c.stage !== "deliver");
+
+      // Filtered Evidence
+      const q = searchQuery.toLowerCase();
+      const filteredEv = c.evidence.filter(e => e.title.toLowerCase().includes(q) || e.claim.toLowerCase().includes(q) || e.source.toLowerCase().includes(q));
+      document.getElementById("evidence-list").innerHTML = filteredEv.map(e => `
+        <div class="p-3.5 rounded-xl border border-slate-200 hover:border-blue-300 transition bg-slate-50/50 hover:bg-blue-50/20">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${e.confidence === 'Customer Validated' ? 'bg-emerald-100 text-emerald-800' : e.confidence === 'Grounded Telemetry' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}">
+                ${e.confidence}
+              </span>
+              <h3 class="text-sm font-bold text-slate-900 mt-1.5">${e.title}</h3>
+            </div>
+            <span class="text-[11px] text-slate-600 font-mono">ID: ${e.id}</span>
+          </div>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">${e.claim}</p>
+          <div class="mt-3 pt-2.5 border-t border-slate-200/60 flex items-center justify-between text-xs">
+            <span class="text-slate-600 italic">Source: ${e.source}</span>
+            <button onclick="inspectEvidence('${e.id}')" class="text-[#0078D4] font-semibold hover:underline">
+              View Details & Validation Rules →
+            </button>
+          </div>
+        </div>
+      `).join("");
+
+      // Filtered Opportunities
+      const filteredOpps = c.opportunities.filter(o => o.title.toLowerCase().includes(q) || o.need.toLowerCase().includes(q) || o.target.toLowerCase().includes(q));
+      document.getElementById("opps-list").innerHTML = filteredOpps.map(o => `
+        <div class="p-4 rounded-xl border transition ${o.status === 'Validated' ? 'border-emerald-300 bg-emerald-50/20' : 'border-slate-200 bg-white'}">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full ${o.status === 'Validated' ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
+              <h3 class="text-sm font-bold text-slate-900">${o.title}</h3>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${o.status === 'Validated' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+              ${o.status}
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 mt-2">${o.need}</p>
+          <div class="mt-2 text-xs text-slate-500 bg-slate-50 p-2 rounded border border-slate-200">
+            <span class="font-semibold text-slate-700">Measurable Target: </span>${o.target}
+          </div>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="text-[11px] text-slate-500 font-medium">Priority: <strong class="text-slate-700">${o.priority}</strong></span>
+            <div class="flex items-center gap-2">
+              ${o.status !== 'Validated' ? `
+                <button onclick="validateOpp('${o.id}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition">
+                  Validate with Customer
+                </button>
+              ` : `
+                <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">✓ Validated</span>
+              `}
+              <button onclick="dismissOpp('${o.id}')" class="px-2.5 py-1 rounded border border-slate-300 hover:bg-slate-100 text-slate-600 text-xs font-medium transition">
+                Dismiss Signal
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      // Capabilities
+      document.getElementById("capabilities-list").innerHTML = c.capabilities.map(cap => `
+        <div class="p-4 rounded-xl border transition ${cap.status === 'Selected' ? 'border-[#0078D4] bg-blue-50/20 ring-1 ring-blue-100' : 'border-slate-200 bg-white'}">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#0078D4] block">${cap.role}</span>
+              <h3 class="text-sm font-bold text-slate-900 mt-0.5">${cap.name}</h3>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${cap.status === 'Selected' ? 'bg-blue-100 text-[#0078D4]' : 'bg-slate-100 text-slate-600'}">
+              ${cap.status}
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">${cap.note}</p>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <button onclick="inspectCap('${cap.id}')" class="text-xs font-semibold text-[#0078D4] hover:underline">
+              Review Questions & Trade-offs →
+            </button>
+            <button onclick="toggleCap('${cap.id}')" class="px-2.5 py-1 rounded text-xs font-semibold transition ${cap.status === 'Selected' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-[#0078D4] hover:bg-blue-700 text-white'}">
+              ${cap.status === 'Selected' ? 'Deselect' : 'Select'}
+            </button>
+          </div>
+        </div>
+      `).join("");
+
+      // Tasks
+      document.getElementById("deliver-tasks-percent").innerText = `${tasksPercent}% Completed`;
+      document.getElementById("deliver-tasks-bar").style.width = `${tasksPercent}%`;
+      document.getElementById("tasks-list").innerHTML = c.tasks.map(t => `
+        <div onclick="toggleTask(${t.id})" class="p-3.5 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition select-none ${t.done ? 'bg-emerald-50/40 border-emerald-200 text-slate-500' : 'bg-white border-slate-200 hover:border-blue-300'}">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${t.id})" class="w-4 h-4 rounded accent-[#0078D4] cursor-pointer" />
+            <div>
+              <div class="text-xs font-semibold ${t.done ? 'line-through text-slate-400' : 'text-slate-900'}">${t.title}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
+                <span>Owner: <strong class="text-slate-600">${t.owner}</strong></span>
+                <span>•</span>
+                <span>Due: <strong class="text-slate-600">${t.due}</strong></span>
+              </div>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${t.done ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}">
+            ${t.done ? 'Complete' : 'Pending'}
+          </span>
+        </div>
+      `).join("");
+    }
+
+    // Modal Control Functions
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    // State Mutators
+    function switchClient(id) {
+      currentId = id;
+      showToast(`Switched active context to: ${getCurrentClient().name}`);
+      renderUI();
+    }
+
+    function setStage(stageName) {
+      getCurrentClient().stage = stageName;
+      showToast(`Progressed to stage: ${stageName.toUpperCase()}`);
+      renderUI();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderUI();
+    }
+
+    function updateFleetSize(val) {
+      getCurrentClient().fleetSize = Number(val);
+      renderUI();
+    }
+
+    function updateCompute(val) {
+      getCurrentClient().computeProfile = val;
+      renderUI();
+    }
+
+    function updateFabric(val) {
+      getCurrentClient().fabricSku = val;
+      renderUI();
+    }
+
+    function toggleTask(id) {
+      const c = getCurrentClient();
+      c.tasks = c.tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      renderUI();
+    }
+
+    function addNewTaskPrompt() {
+      const title = prompt("Enter title of delivery task:");
+      if (title && title.trim()) {
+        getCurrentClient().tasks.push({
+          id: Date.now(),
+          title: title.trim(),
+          owner: "Strategic Technical Lead",
+          due: "Next Milestone",
+          done: false
+        });
+        showToast("Delivery task added.");
+        renderUI();
+      }
+    }
+
+    function toggleCap(id) {
+      const c = getCurrentClient();
+      c.capabilities = c.capabilities.map(cap => cap.id === id ? { ...cap, status: cap.status === "Selected" ? "Draft" : "Selected" } : cap);
+      showToast("Architecture blueprint updated.");
+      renderUI();
+    }
+
+    function validateOpp(id) {
+      const c = getCurrentClient();
+      c.opportunities = c.opportunities.map(o => o.id === id ? { ...o, status: "Validated" } : o);
+      showToast("Opportunity validated with customer sponsor!");
+      renderUI();
+    }
+
+    function dismissOpp(id) {
+      const c = getCurrentClient();
+      c.opportunities = c.opportunities.filter(o => o.id !== id);
+      showToast("Opportunity dismissed.");
+      renderUI();
+    }
+
+    function discoverOpportunity() {
+      const c = getCurrentClient();
+      c.opportunities.push({
+        id: "OPP-" + Date.now(),
+        title: "Autonomous Fleet Safety & Geofencing Watchdog",
+        need: "Sub-50ms cloud and edge failover interlock to prevent robotic collision with factory personnel.",
+        target: "Zero safety boundary incursions across 500+ active operating hours",
+        status: "Needs Validation",
+        priority: "High"
+      });
+      showToast("AI discovery agent extracted 1 candidate opportunity.");
+      renderUI();
+    }
+
+    function inspectEvidence(id) {
+      const ev = getCurrentClient().evidence.find(e => e.id === id);
+      if (!ev) return;
+      document.getElementById("inspect-ev-id").innerText = `EVIDENCE INSPECTOR · ${ev.id}`;
+      document.getElementById("inspect-ev-title").innerText = ev.title;
+      document.getElementById("inspect-ev-claim").innerText = ev.claim;
+      document.getElementById("inspect-ev-source").innerText = ev.source;
+      document.getElementById("inspect-ev-conf").innerText = ev.confidence;
+      openModal("modal-evidence-inspector");
+    }
+
+    function inspectCap(id) {
+      const cap = getCurrentClient().capabilities.find(c => c.id === id);
+      if (!cap) return;
+      document.getElementById("inspect-cap-name").innerText = cap.name;
+      document.getElementById("inspect-cap-role").innerText = cap.role;
+      document.getElementById("inspect-cap-note").innerText = cap.note;
+      openModal("modal-cap-inspector");
+    }
+
+    function submitAddCustomer(e) {
+      e.preventDefault();
+      const name = document.getElementById("new-cust-name").value.trim();
+      const summary = document.getElementById("new-cust-summary").value.trim() || "Robotic transformation exploration.";
+      if (!name) return;
+      const newId = "cust_" + Date.now();
+      const newRec = {
+        id: newId,
+        name: name,
+        tagline: "Custom Enterprise Robotic Account",
+        summary: summary,
+        stage: "discover",
+        fleetSize: 300,
+        computeProfile: "Balanced",
+        fabricSku: "F128",
+        maccTarget: "$1.5M",
+        evidence: [
+          { id: "EV-NEW-1", title: "Initial Strategic Discovery Note", source: "Executive Sponsor Meeting", claim: "Identified operational automation opportunity. Validation required with security leads.", confidence: "Unverified Hypothesis" }
+        ],
+        opportunities: [
+          { id: "OPP-NEW-1", title: "Enterprise Fleet Telemetry Unification", need: "Consolidate heterogeneous device logs into a central cloud lakehouse.", target: "Real-time visibility across all units", status: "Exploratory", priority: "High" }
+        ],
+        capabilities: [
+          { id: "CAP-N1", name: "Azure IoT Operations", role: "Edge Management", status: "Selected", note: "Standard containerized edge deployment." },
+          { id: "CAP-N2", name: "Microsoft Fabric", role: "Lakehouse Analytics", status: "Selected", note: "Real-time analytics and telemetry lakehouse." }
+        ],
+        tasks: [
+          { id: 901, title: "Hold technical discovery workshop with customer lead", owner: "Strategic Technical Lead", due: "Next week", done: false }
+        ]
+      };
+      clients.unshift(newRec);
+      currentId = newId;
+      document.getElementById("new-cust-name").value = "";
+      document.getElementById("new-cust-summary").value = "";
+      closeModal("modal-add-customer");
+      showToast(`Account "${newRec.name}" created and loaded!`);
+      renderUI();
+    }
+
+    function submitAddNote(e) {
+      e.preventDefault();
+      const title = document.getElementById("note-title").value.trim();
+      const claim = document.getElementById("note-claim").value.trim();
+      const source = document.getElementById("note-source").value.trim() || "Working Technical Session";
+      const conf = document.getElementById("note-conf").value;
+      if (!title || !claim) return;
+      getCurrentClient().evidence.unshift({
+        id: "EV-N-" + Date.now(),
+        title: title,
+        source: source,
+        claim: claim,
+        confidence: conf
+      });
+      document.getElementById("note-title").value = "";
+      document.getElementById("note-claim").value = "";
+      document.getElementById("note-source").value = "";
+      closeModal("modal-add-note");
+      showToast("Grounded evidence item logged to record.");
+      renderUI();
+    }
+
+    function submitSpecialist(e) {
+      e.preventDefault();
+      const team = document.getElementById("spec-team").value;
+      getCurrentClient().tasks.push({
+        id: Date.now(),
+        title: `Specialist Review: ${team}`,
+        owner: team.includes("GBB") ? "Microsoft GBB Lead" : "Customer Engineering (CAT)",
+        due: "Within 3 business days",
+        done: false
+      });
+      closeModal("modal-specialist");
+      showToast(`Engagement ticket routed to ${team}!`);
+      renderUI();
+    }
+
+    function copilotPrompt(text) {
+      document.getElementById("copilot-input").value = text;
+      sendCopilot();
+    }
+
+    function sendCopilot() {
+      const input = document.getElementById("copilot-input");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+
+      const chat = document.getElementById("copilot-chat");
+      chat.innerHTML += `
+        <div class="p-3 rounded-xl bg-[#0078D4] text-white ml-4 rounded-br-xs leading-relaxed">
+          <span class="text-[10px] font-bold block mb-1 opacity-70">Strategic Lead</span>
+          <div class="text-[11px]">${text}</div>
+        </div>
+      `;
+      chat.scrollTop = chat.scrollHeight;
+
+      setTimeout(() => {
+        const c = getCurrentClient();
+        const acr = calculateACR(c);
+        let reply = "";
+        const lower = text.toLowerCase();
+        if (lower.includes("question") || lower.includes("discovery")) {
+          reply = `Recommended Discovery Questions for ${c.name}:\n1. What is the allowable round-trip latency between onboard controllers and cloud supervisors during an emergency stop condition?\n2. How does the current factory OT/IT DMZ firewall handle outbound MQTT/TLS telemetry packets?\n3. What is the current monthly expenditure on un-optimized cloud or on-prem GPU training runs?`;
+        } else if (lower.includes("architecture") || lower.includes("design") || lower.includes("trade-off")) {
+          reply = `Target Architecture Recommendation for ${c.name}:\n• Edge Tier: Azure IoT Operations running K3s Akri broker on robot onboard compute.\n• Streaming Analytics: Microsoft Fabric Real-Time Intelligence (KQL database) with instant event reflection.\n• Model Training: Azure AI Foundry orchestrating NDv5 H100 clusters with automated checkpoint validation.\n• Governance: Microsoft Purview automated PII redaction pipeline for spatial video capture.`;
+        } else if (lower.includes("security") || lower.includes("checklist") || lower.includes("macc")) {
+          reply = `Pre-Flight Validation & Risk Register:\n1. Security: Ensure robot cryptographic certificates are provisioned via Azure Key Vault HSM.\n2. Telemetry Ingestion: Confirm network bandwidth headroom for 100Hz IMU sub-sampling.\n3. Commercial: Current indicative run-rate of $${acr.annualM}M/yr eligible for 100% MACC commitment retirement.`;
+        } else {
+          reply = `Strategic Technical Analysis for ${c.name}:\nRegarding "${text}": Every architectural recommendation must be grounded in verified evidence. We recommend scheduling a 45-minute working session with the customer's Chief Architect to validate operational constraints before committing compute quotas.`;
+        }
+
+        chat.innerHTML += `
+          <div class="p-3 rounded-xl bg-slate-50 text-slate-800 mr-4 border border-slate-200 rounded-bl-xs leading-relaxed">
+            <span class="text-[10px] font-bold block mb-1 opacity-70">Grounded Assistant</span>
+            <div class="whitespace-pre-line text-[11px]">${reply}</div>
+          </div>
+        `;
+        chat.scrollTop = chat.scrollHeight;
+      }, 400);
+    }
+
+    function exportHandoverBrief() {
+      const c = getCurrentClient();
+      const acr = calculateACR(c);
+      const doneTasks = c.tasks.filter(t => t.done).length;
+      const tasksPercent = Math.round((doneTasks / (c.tasks.length || 1)) * 100);
+
+      const content = `================================================================================
+MICROSOFT FRONTIER WORKBENCH — CUSTOMER TRANSFORMATION BRIEF
+Strategic Technical Lead Work Product
+Date Generated: ${new Date().toLocaleString()}
+================================================================================
+
+1. CUSTOMER IDENTITY & STRATEGIC CONTEXT
+Account Name: ${c.name}
+Strategic Focus: ${c.tagline}
+Operational Hypothesis:
+${c.summary}
+
+Current Lifecycle Stage: Stage ${c.stage === 'discover' ? '1 (Discover & Understand)' : c.stage === 'design' ? '2 (Design & Shape)' : '3 (Deliver & Realise Value)'}
+Session Indicative Annual Run-Rate: $${acr.annualM}M USD (MACC Target: ${c.maccTarget})
+
+--------------------------------------------------------------------------------
+2. GROUNDED EVIDENCE REGISTER (${c.evidence.length} items logged)
+--------------------------------------------------------------------------------
+${c.evidence.map(e => `[${e.confidence.toUpperCase()}]${e.title}
+   Source: ${e.source}
+   Claim: ${e.claim}`).join('\n\n')}
+
+--------------------------------------------------------------------------------
+3. VALIDATED VALUE & OPPORTUNITY HYPOTHESES (${c.opportunities.length} items)
+--------------------------------------------------------------------------------
+${c.opportunities.map(o => `• [${o.status.toUpperCase()}]${o.title}
+   Need: ${o.need}
+   Target Outcome: ${o.target} \vert{} Priority:${o.priority}`).join('\n\n')}
+
+--------------------------------------------------------------------------------
+4. CANDIDATE ARCHITECTURE & CAPABILITY BLUEPRINT
+--------------------------------------------------------------------------------
+${c.capabilities.map(cap => `[${cap.status.toUpperCase()}] ${cap.name} (${cap.role})
+   Note: ${cap.note}`).join('\n')}
+
+--------------------------------------------------------------------------------
+5. DELIVERY EXECUTION CHECKLIST & VIRTUAL TEAM OWNERSHIP (${doneTasks}/${c.tasks.length} Completed - ${tasksPercent}%)
+--------------------------------------------------------------------------------
+${c.tasks.map(t => `[${t.done ? 'X' : ' '}] ${t.title}
+    Accountable Owner: ${t.owner} \vert{} Milestone Due:${t.due}`).join('\n')}
+
+================================================================================
+GOVERNANCE & ENVIRONMENT NOTICE:
+Generated in Microsoft Frontier Workbench test sandbox. Simulated consumption
+calculations are indicative estimates and require official Azure Pricing Calculator
+and MACC commercial agreement validation before contractual signing.
+================================================================================`;
+
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${c.id}-transformation-handover-brief.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Complete Transformation Brief downloaded (.txt)");
+    }
+
+    function copySummary() {
+      const c = getCurrentClient();
+      const acr = calculateACR(c);
+      const text = `Customer: ${c.name}\nStage: ${c.stage}\nAnnual Run-Rate: $${acr.annualM}M\nValidated Opportunities: ${c.opportunities.filter(o => o.status === 'Validated').length}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast("Summary copied to clipboard!"));
+      } else {
+        showToast("Summary ready (use Export Brief for full file)");
+      }
+    }
+
+    function resetDemo() {
+      clients = JSON.parse(JSON.stringify(SEED_DATA));
+      currentId = "unitree";
+      searchQuery = "";
+      document.getElementById("search-input").value = "";
+      showToast("Demo environment reset to initial seed values.");
+      renderUI();
+    }
+
+    // Initialize UI on load
+    window.addEventListener("DOMContentLoaded", () => {
+      renderUI();
+    });
+  </script>
+</body>
+</html>
